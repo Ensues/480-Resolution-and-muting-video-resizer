@@ -26,6 +26,8 @@ for filename in os.listdir(input_folder):
 # Convert seconds to H:M:S format
 formatted_time = str(datetime.timedelta(seconds=int(total_seconds)))
 
+print(f"Total duration of all source videos: {formatted_time}")
+
 # Loop through all files in the input folder
 for filename in os.listdir(input_folder):
     if filename.endswith(".mp4"):
