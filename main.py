@@ -3,7 +3,7 @@ import os
 import datetime
 import time
 
-# Cuz
+# Functions cuz I can
 def get_folder_size(folder_path):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(folder_path):
@@ -15,6 +15,24 @@ def get_folder_size(folder_path):
     # Returns size in MB for readability
     return round(total_size / (1024 * 1024), 2)
 
+def get_video_stats(folder_path):
+    total_seconds = 0
+    file_count = 0
+    for filename in os.listdir(folder_path):
+        if filename.lower().endswith(".mp4"):
+            path = os.path.join(folder_path, filename)
+            try:
+                probe = ffmpeg.probe(path)
+                duration = float(probe['format']['duration'])
+                total_seconds += duration
+                file_count += 1
+            except Exception:
+                # Skip files that are corrupted or not readable by ffmpeg
+                pass
+    
+    formatted_time = str(datetime.timedelta(seconds=int(total_seconds)))
+    return formatted_time, total_seconds, file_count
+
 # Define I/O folders
 
 input_folder = r'C:\Users\ejans\OneDrive\Documents\Thesis Stuff\Test' 
@@ -25,8 +43,6 @@ output_folder = os.path.join(parent_folder, 'Cleaned Dataset Videos')
 
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
-    
-total_seconds = 0
 
 print("-" * 30)
 
@@ -34,21 +50,8 @@ print("-" * 30)
 
 print("Calculating total duration and size of input videos...")
 
-input_size_mb = get_folder_size(input_folder)
-
-for filename in os.listdir(input_folder):
-    if filename.lower().endswith(".mp4"):
-        path = os.path.join(input_folder, filename)
-        try:
-            probe = ffmpeg.probe(path)
-            duration = float(probe['format']['duration'])
-            total_seconds += duration
-        except Exception:
-            pass
-        
-# Convert seconds to H:M:S format
-
-formatted_original_time = str(datetime.timedelta(seconds=int(total_seconds)))
+input_size_mb = get_folder_size(input_folder) 
+formatted_original_time, total_input_seconds, input_file_count = get_video_stats(input_folder)
 
 print(f"Total duration of all source videos: {formatted_original_time}")
 print(f"Total size of input folder: {input_size_mb} MB")
@@ -126,28 +129,20 @@ end = time.time()
 
 print("-" * 30)
 print("Calculating final dataset duration...")
-output_size_mb = get_folder_size(output_folder)
-total_output_seconds = 0
-file_count = 0
 
-for filename in os.listdir(output_folder):
-    if filename.lower().endswith(".mp4"):
-        path = os.path.join(output_folder, filename)
-        try:
-            probe = ffmpeg.probe(path)
-            duration = float(probe['format']['duration'])
-            total_output_seconds += duration
-            file_count += 1
-        except Exception:
-            pass
-        
-formatted_final_time = str(datetime.timedelta(seconds=int(total_output_seconds)))
+output_size_mb = get_folder_size(output_folder)
+formatted_final_time, total_output_seconds, output_file_count = get_video_stats(output_folder)
 
 print("-" * 30)
-print("All videos have been processed")
-print(f"Processing time: {round(end-start, 2)} seconds")
-print(f"Total size of input folder: {input_size_mb} MB")
+print("All videos have been processed\n")
+
+print(f"Processing time: {round(end-start, 2)} seconds\n")
+
 print(f"Total duration of all source videos: {formatted_original_time}")
-print(f"Total processed files: {file_count}")
+print(f"Total raw videos: {input_file_count}")
+print(f"Total size of input folder: {input_size_mb} MB\n")
+
+print(f"Total duration of all cleaned videos: {formatted_final_time}")
+print(f"Total processed videos: {output_file_count}")
 print(f"Total size of output folder: {output_size_mb} MB")
 print("-" * 30)
