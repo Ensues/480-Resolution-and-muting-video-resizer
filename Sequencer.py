@@ -88,7 +88,7 @@ for filename in os.listdir(input_folder):
                     # Grayscale and Scale
                     # vf='format=gray,scale=64:64', 
                     # Framerate
-                    r=2,
+                    r=10,
                     # Disable audio
                     an=None, 
                     # Remove rotation metadata

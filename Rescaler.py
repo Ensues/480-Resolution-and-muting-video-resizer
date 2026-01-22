@@ -78,7 +78,11 @@ for filename in os.listdir(input_folder):
             (
                 ffmpeg
                 .input(input_path)
-                .output(output_path, vf='scale=-1:480', an=None, metadata='s:v:0 rotate=0')
+                .output(
+                    output_path, 
+                    vf='scale=-1:480, fps=10', 
+                    an=None, 
+                    metadata='s:v:0 rotate=0')
                 .overwrite_output() # Overwrites if file exists
                 .run(quiet=True)
             )
