@@ -35,7 +35,7 @@ def get_video_stats(folder_path):
 
 # Define I/O folders
 
-input_folder = r'C:\Users\ejans\OneDrive\Documents\Thesis Stuff\Cleaned Dataset Videos' 
+input_folder = r'' 
 parent_folder = os.path.dirname(input_folder)
 output_folder = os.path.join(parent_folder, 'Segmented Dataset Videos 1')
 
